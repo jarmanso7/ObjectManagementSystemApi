@@ -1,27 +1,18 @@
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ObjectManagementSystemApi.Application;
+using ObjectManagementSystemApi.Application.Serializers;
+using ObjectManagementSystemApi.Application.Services;
 using ObjectManagementSystemApi.Domain;
 using ObjectManagementSystemApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<GremlinService>();
-builder.Services.AddSingleton<IRepository,Repository>();
-
-builder.Services.AddTransient<IPersistenceService, PersistenceService>();
-
-builder.Services.AddEndpointsApiExplorer(); 
-builder.Services.AddSwaggerGen();
+RegisterDependencies(builder.Services);
+AddServices(builder.Services); 
 
 var app = builder.Build();
 
-app.UseSwagger();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerUI();
-}
+ActivateServices(app);
 
 app.MapGet("/test", async (IPersistenceService persistenceService) =>
 {
@@ -30,33 +21,12 @@ app.MapGet("/test", async (IPersistenceService persistenceService) =>
     return JsonConvert.SerializeObject(results);
 });
 
-app.MapGet("/objects", () =>
+app.MapGet("/objects", async (IPersistenceService persistenceService) => 
 {
-    var results = new List<GeneralObject>()
-    {
-        new GeneralObject
-        {
-            Id = Guid.NewGuid(),
-            Name = "Xavi",
-            Description = "A funny guy.",
-            Type = "Person"
-        },
-        new GeneralObject
-        {
-            Id = Guid.NewGuid(),
-            Name = "Marc",
-            Description = "A very handsome guy.",
-            Type = "Person"
-        },
-        new GeneralObject
-        {
-            Id = Guid.NewGuid(),
-            Name = "Martí",
-            Description = "A smart guy.",
-            Type = "Person"
-        },
-    };
-    return JsonConvert.SerializeObject(results);
+	var objects = await persistenceService.GetAllObjects();
+
+	//return Results.Text(results, contentType: "application/json");
+	return Results.Text(JsonConvert.SerializeObject(objects), contentType: "application/json");
 });
 
 app.MapPost("/objects", async (GeneralObject newObject, IPersistenceService persistenceService) =>
@@ -69,24 +39,11 @@ app.MapPut("/objects/{id}", () =>
 
 });
 
-app.MapGet("/relationships", () =>
+app.MapGet("/relationships", async (IPersistenceService persistenceService) =>
 {
-    var results = new List<Relationship>()
-    {
-        new Relationship
-        {
-            Name = "Knows",
-            FromType = "Person",
-            ToType = "Person"
-        },
-        new Relationship
-        {
-            Name = "Has",
-            FromType = "Person",
-            ToType = "Tool"
-        }
-    };
-    return JsonConvert.SerializeObject(results);
+    var relationships = await persistenceService.GetAllRelationships();
+
+    return Results.Text(JsonConvert.SerializeObject(relationships), contentType: "application/json");
 });
 
 app.MapPost("/relationships", async (string fromId, string toId, string relationshipName, IPersistenceService persistenceService) =>
@@ -95,3 +52,29 @@ app.MapPost("/relationships", async (string fromId, string toId, string relation
 });
 
 app.Run();
+
+void RegisterDependencies(IServiceCollection services)
+{
+	builder.Services.AddSingleton<GremlinService>();
+	builder.Services.AddSingleton<IRepository, Repository>();
+	builder.Services.AddTransient<ISerializerService, SerializerService>();
+	builder.Services.AddTransient<IPersistenceService, PersistenceService>();
+}
+
+void AddServices(IServiceCollection services)
+{
+	builder.Services.AddEndpointsApiExplorer();
+	builder.Services.AddSwaggerGen();
+	builder.Services.AddCors();
+}
+
+void ActivateServices(WebApplication app)
+{
+	app.UseCors(builder =>
+	{
+		builder.AllowAnyOrigin(); // Only for the PoC, in further developments proper cors restrictions must be set up.
+	});
+
+	app.UseSwagger();
+	app.UseSwaggerUI();
+}

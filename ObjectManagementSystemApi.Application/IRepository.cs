@@ -2,7 +2,10 @@
 
 namespace ObjectManagementSystemApi.Application
 {
-    public interface IRepository
+	/// <summary>
+	/// Enables storage of data in a repository.
+	/// </summary>
+	public interface IRepository
     {
         public Task AddObject(GeneralObject newObject);
 
