@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "ObjectManagementSystemApi.Infrastructure": {
+      "commandName": "Project"
+    }
+  }
+}
