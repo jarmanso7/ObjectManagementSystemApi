@@ -12,7 +12,22 @@ namespace ObjectManagementSystemApi.Application.Serializers
 	{
 		public ReadOnlyCollection<GeneralObject> GremlinVerticesToGeneralObjects(string serializedVertices)
 		{
-			throw new NotImplementedException();
+			var deserializedVertices = JsonConvert.DeserializeObject<dynamic>(serializedVertices);
+
+			var objects = new List<GeneralObject>();
+
+			foreach(var vertex in deserializedVertices)
+			{
+				objects.Add(new GeneralObject()
+				{
+					Id = vertex.id,
+					Type = vertex.label,
+					Name = vertex.properties.name.value,
+					Description = vertex.properties.description.value
+				});
+			}
+
+			return new ReadOnlyCollection<GeneralObject>(objects);
 		}
 
 		public ReadOnlyCollection<Relationship> GremlinEdgesToRelationships(string serializedEdges)

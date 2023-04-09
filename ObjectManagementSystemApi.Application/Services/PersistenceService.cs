@@ -23,12 +23,16 @@ namespace ObjectManagementSystemApi.Application.Services
 
         public async Task AddObject(GeneralObject newObject)
         {
+            newObject.Id = string.IsNullOrEmpty(newObject.Id) ? Guid.NewGuid().ToString() : newObject.Id;
+
             await repository.AddObject(newObject);
         }
 
-        public async Task AddRelationship(string fromId, string toId, string relationshipName)
+        public async Task AddRelationship(Relationship relationship)
         {
-            await repository.AddRelationship(fromId, toId, relationshipName);
+			relationship.Id = string.IsNullOrEmpty(relationship.Id) ? Guid.NewGuid().ToString() : relationship.Id;
+
+			await repository.AddRelationship(relationship);
         }
 
         public async Task<List<string>> GetDistinctRelationshipsNames()

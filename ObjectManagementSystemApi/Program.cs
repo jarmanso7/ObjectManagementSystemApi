@@ -25,13 +25,14 @@ app.MapGet("/objects", async (IPersistenceService persistenceService) =>
 {
 	var objects = await persistenceService.GetAllObjects();
 
-	//return Results.Text(results, contentType: "application/json");
 	return Results.Text(JsonConvert.SerializeObject(objects), contentType: "application/json");
 });
 
 app.MapPost("/objects", async (GeneralObject newObject, IPersistenceService persistenceService) =>
 {
-    await persistenceService.AddObject(newObject);
+	await persistenceService.AddObject(newObject);
+
+	//TODO: return the newly created object
 });
 
 app.MapPut("/objects/{id}", () =>
@@ -46,9 +47,9 @@ app.MapGet("/relationships", async (IPersistenceService persistenceService) =>
     return Results.Text(JsonConvert.SerializeObject(relationships), contentType: "application/json");
 });
 
-app.MapPost("/relationships", async (string fromId, string toId, string relationshipName, IPersistenceService persistenceService) =>
+app.MapPost("/relationships", async (Relationship relationship, IPersistenceService persistenceService) =>
 {
-    await persistenceService.AddRelationship(fromId, toId, relationshipName);
+    await persistenceService.AddRelationship(relationship);
 });
 
 app.Run();

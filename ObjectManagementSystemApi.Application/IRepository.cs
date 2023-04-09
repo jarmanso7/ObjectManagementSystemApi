@@ -9,7 +9,7 @@ namespace ObjectManagementSystemApi.Application
     {
         public Task AddObject(GeneralObject newObject);
 
-        public Task AddRelationship(string fromId, string toId, string relationshipName);
+        public Task AddRelationship(Relationship relationship);
 
         public Task<string> GetAllObjects();
 

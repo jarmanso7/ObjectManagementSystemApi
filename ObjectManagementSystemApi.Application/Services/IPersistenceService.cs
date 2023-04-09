@@ -12,7 +12,7 @@ namespace ObjectManagementSystemApi.Application.Services
 
         public Task<ReadOnlyCollection<GeneralObject>> GetAllObjects();
 
-        public Task AddRelationship(string fromId, string toId, string relationshipName);
+        public Task AddRelationship(Relationship relationship);
 
         public Task<List<string>> GetAllRelationshipDistinctNames();
 

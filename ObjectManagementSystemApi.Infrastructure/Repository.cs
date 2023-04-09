@@ -1,4 +1,5 @@
-﻿using ObjectManagementSystemApi.Application;
+﻿using Newtonsoft.Json;
+using ObjectManagementSystemApi.Application;
 using ObjectManagementSystemApi.Domain;
 namespace ObjectManagementSystemApi.Infrastructure
 {
@@ -18,14 +19,14 @@ namespace ObjectManagementSystemApi.Infrastructure
             await gremlinService.SubmitRequest(request);
         }
 
-        public async Task AddRelationship(string fromId, string toId, string relationshipName)
+        public async Task AddRelationship(Relationship relationship)
         {
-            if (await UnidirectionalRelationshipExists(fromId, toId, relationshipName))
+            if (await UnidirectionalRelationshipExists(relationship.FromId, relationship.ToId, relationship.Type))
             {
                 return;
             }
    
-            var request = $"g.V('{fromId}').addE('{relationshipName}').to(g.V('{toId}'))";
+            var request = $"g.V('{relationship.FromId}').addE('{relationship.Type}').property('id', '{relationship.Id}').to(g.V('{relationship.ToId}'))";
 
             await gremlinService.SubmitRequest(request);
         }
@@ -55,9 +56,9 @@ namespace ObjectManagementSystemApi.Infrastructure
         {
             var request = $"g.V('{fromId}').outE('{relationshipName}').where(otherV().is('{toId}')).Count()";
 
-            var count = Int32.Parse(await gremlinService.SubmitRequest(request));
+            var count = JsonConvert.DeserializeObject<int[]>(await gremlinService.SubmitRequest(request));
 
-            switch (count)
+            switch (count[0])
             {
                 case 0:
                     return false;
