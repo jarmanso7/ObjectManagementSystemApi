@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using ObjectManagementSystemApi.Domain;
 using System.Collections.ObjectModel;
 
@@ -22,8 +21,8 @@ namespace ObjectManagementSystemApi.Application.Serializers
 				{
 					Id = vertex.id,
 					Type = vertex.label,
-					Name = vertex.properties.name.value,
-					Description = vertex.properties.description.value
+					Name = vertex.properties.name[0].value,
+					Description = vertex.properties.description[0].value
 				});
 			}
 
