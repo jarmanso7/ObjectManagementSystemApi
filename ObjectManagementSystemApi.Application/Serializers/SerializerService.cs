@@ -41,8 +41,8 @@ namespace ObjectManagementSystemApi.Application.Serializers
 				{
 					Id = edge.id,
 					Type = edge.label,
-					FromId = edge.inV,
-					ToId = edge.outV,
+					FromId = edge.outV,
+					ToId = edge.inV,
 				});
 			}
 
