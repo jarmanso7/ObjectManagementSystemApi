@@ -20,7 +20,7 @@ namespace ObjectManagementSystemApi.Application.Serializers
 				objects.Add(new GeneralObject()
 				{
 					Id = vertex.id,
-					Type = vertex.label,
+					Type = vertex.properties.type[0].value,
 					Name = vertex.properties.name[0].value,
 					Description = vertex.properties.description[0].value
 				});
