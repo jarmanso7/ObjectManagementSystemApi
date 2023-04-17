@@ -14,7 +14,7 @@ namespace ObjectManagementSystemApi.Infrastructure
 
         public async Task AddObject(GeneralObject newObject)
         {
-            var request = $"g.addV('{newObject.Type}').property('id', '{newObject.Id}').property('name', '{newObject.Name}').property('description', '{newObject.Description}').property('pk', 'pk')";
+            var request = $"g.addV('{newObject.Name}').property('id', '{newObject.Id}').property('name', '{newObject.Name}').property('description', '{newObject.Description}').property('type', '{newObject.Type}').property('pk', 'pk')";
 
             await gremlinService.SubmitRequest(request);
         }

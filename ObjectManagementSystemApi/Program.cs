@@ -31,8 +31,6 @@ app.MapGet("/objects", async (IPersistenceService persistenceService) =>
 app.MapPost("/objects", async (GeneralObject newObject, IPersistenceService persistenceService) =>
 {
 	await persistenceService.AddObject(newObject);
-
-	//TODO: return the newly created object
 });
 
 app.MapPut("/objects/{id}", () =>
@@ -64,18 +62,20 @@ void RegisterDependencies(IServiceCollection services)
 
 void AddServices(IServiceCollection services)
 {
-	builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddCors();
+    builder.Services.AddEndpointsApiExplorer();
 	builder.Services.AddSwaggerGen();
-	builder.Services.AddCors();
 }
 
 void ActivateServices(WebApplication app)
 {
-	app.UseCors(builder =>
-	{
-		builder.AllowAnyOrigin(); // Only for the PoC, in further developments proper cors restrictions must be set up.
-	});
+    app.UseCors(builder => builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowCredentials()
+                ); // Warning: Only for the PoC application, in further developments proper cors restrictions must be set up.
 
-	app.UseSwagger();
+    app.UseSwagger();
 	app.UseSwaggerUI();
 }
