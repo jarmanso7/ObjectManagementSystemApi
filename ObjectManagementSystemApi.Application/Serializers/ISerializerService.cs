@@ -8,8 +8,18 @@ namespace ObjectManagementSystemApi.Application.Serializers
 	/// </summary>
 	public interface ISerializerService
     {
-		public ReadOnlyCollection<GeneralObject> GremlinVerticesToGeneralObjects(string serializedVertices);
+        /// <summary>
+        /// Converts gremlin vertices to general objects.
+        /// </summary>
+        /// <param name="serializedVertices">The serialized vertices.</param>
+        /// <returns></returns>
+        public ReadOnlyCollection<GeneralObject> GremlinVerticesToGeneralObjects(string serializedVertices);
 
-		public ReadOnlyCollection<Relationship> GremlinEdgesToRelationships(string serializedEdges);
+        /// <summary>
+        /// Converts Gremlins Edges to Relationships.
+        /// </summary>
+        /// <param name="serializedEdges">The serialized edges.</param>
+        /// <returns></returns>
+        public ReadOnlyCollection<Relationship> GremlinEdgesToRelationships(string serializedEdges);
 	}
 }

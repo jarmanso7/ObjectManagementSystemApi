@@ -1,6 +1,9 @@
 ﻿namespace ObjectManagementSystemApi.Domain
 {
-	public class GeneralObject
+    /// <summary>
+    /// Represents a General Object existing in the Object Management System.
+    /// </summary>
+    public class GeneralObject
 	{
 		public string Id { get; set; }
 		public string Type { get; set; }

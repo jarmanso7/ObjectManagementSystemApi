@@ -5,6 +5,10 @@ using System.Net.WebSockets;
 
 namespace ObjectManagementSystemApi.Infrastructure
 {
+    /// <summary>
+    /// Provides communication between the backend .NET minimal API and the Azure Cosmos DB Apache Gremlin database.
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public class GremlinService : IDisposable
     {
         // Azure Cosmos DB Configuration variables

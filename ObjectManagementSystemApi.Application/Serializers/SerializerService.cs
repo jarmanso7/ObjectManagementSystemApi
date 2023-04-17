@@ -5,11 +5,16 @@ using System.Collections.ObjectModel;
 namespace ObjectManagementSystemApi.Application.Serializers
 {
 	/// <summary>
-	/// Enables transformation of data between the Infrastructure and the Application layers
+	/// Enables transformation of data between the Infrastructure and the Application layers.
 	/// </summary>
 	public class SerializerService : ISerializerService
 	{
-		public ReadOnlyCollection<GeneralObject> GremlinVerticesToGeneralObjects(string serializedVertices)
+        /// <summary>
+        /// Converts gremlin vertices to general objects.
+        /// </summary>
+        /// <param name="serializedVertices">The serialized vertices.</param>
+        /// <returns></returns>
+        public ReadOnlyCollection<GeneralObject> GremlinVerticesToGeneralObjects(string serializedVertices)
 		{
 			var deserializedVertices = JsonConvert.DeserializeObject<dynamic>(serializedVertices);
 
@@ -29,7 +34,12 @@ namespace ObjectManagementSystemApi.Application.Serializers
 			return new ReadOnlyCollection<GeneralObject>(objects);
 		}
 
-		public ReadOnlyCollection<Relationship> GremlinEdgesToRelationships(string serializedEdges)
+        /// <summary>
+        /// Converts Gremlins Edges to Relationships.
+        /// </summary>
+        /// <param name="serializedEdges">The serialized edges.</param>
+        /// <returns></returns>
+        public ReadOnlyCollection<Relationship> GremlinEdgesToRelationships(string serializedEdges)
 		{
 			var deserializedEdges = JsonConvert.DeserializeObject<dynamic>(serializedEdges);
 
