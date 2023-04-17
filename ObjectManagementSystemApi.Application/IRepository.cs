@@ -11,6 +11,10 @@ namespace ObjectManagementSystemApi.Application
 
         public Task AddRelationship(Relationship relationship);
 
+        public Task DeleteObject(string objectId);
+
+        public Task DeleteRelationship(string relationshipId);
+
         public Task<string> GetAllObjects();
 
         public Task<string> GetAllRelationships();

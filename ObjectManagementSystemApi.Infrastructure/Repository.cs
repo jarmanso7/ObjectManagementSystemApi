@@ -31,6 +31,20 @@ namespace ObjectManagementSystemApi.Infrastructure
             await gremlinService.SubmitRequest(request);
         }
 
+        public async Task DeleteObject(string generalObjectId)
+        {
+            var request = $"g.V('{generalObjectId}').drop()";
+
+            await gremlinService.SubmitRequest(request);
+        }
+
+        public async Task DeleteRelationship(string relationshipId)
+        {
+            var request = $"g.E('{relationshipId}').drop()";
+
+            await gremlinService.SubmitRequest(request);
+        }
+
         public async Task<string> CountAllRelationshipsByLabel()
         {
             var request = $"g.E().groupCount().by(label)";

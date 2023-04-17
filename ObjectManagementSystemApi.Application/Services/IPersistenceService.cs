@@ -12,7 +12,11 @@ namespace ObjectManagementSystemApi.Application.Services
 
         public Task<ReadOnlyCollection<GeneralObject>> GetAllObjects();
 
+        public Task DeleteObject(string objectId);
+
         public Task AddRelationship(Relationship relationship);
+
+        public Task DeleteRelationship(string relationship);
 
         public Task<List<string>> GetAllRelationshipDistinctNames();
 

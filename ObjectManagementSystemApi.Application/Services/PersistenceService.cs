@@ -35,6 +35,16 @@ namespace ObjectManagementSystemApi.Application.Services
 			await repository.AddRelationship(relationship);
         }
 
+        public async Task DeleteObject(string generalObjectId)
+        {
+            await repository.DeleteObject(generalObjectId);
+        }
+
+        public async Task DeleteRelationship(string relationshipId)
+        {
+            await repository.DeleteRelationship(relationshipId);
+        }
+
         public async Task<List<string>> GetDistinctRelationshipsNames()
         {
             var result = await repository.CountAllRelationshipsByLabel();
