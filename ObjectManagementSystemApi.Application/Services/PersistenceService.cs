@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using ObjectManagementSystemApi.Application.Serializers;
+﻿using ObjectManagementSystemApi.Application.Serializers;
 using ObjectManagementSystemApi.Domain;
 using System.Collections.ObjectModel;
 
 namespace ObjectManagementSystemApi.Application.Services
 {
     /// <summary>
-    ///   Enables persistence of objects and relationships
+    /// Enables persistence of objects and relationships.
     /// </summary>
     public class PersistenceService : IPersistenceService
     {
@@ -21,6 +20,10 @@ namespace ObjectManagementSystemApi.Application.Services
             this.serializerService = serializerService;
         }
 
+        /// <summary>
+        /// Adds the object.
+        /// </summary>
+        /// <param name="newObject">The new object.</param>
         public async Task AddObject(GeneralObject newObject)
         {
             newObject.Id = string.IsNullOrEmpty(newObject.Id) ? Guid.NewGuid().ToString() : newObject.Id;
@@ -28,32 +31,10 @@ namespace ObjectManagementSystemApi.Application.Services
             await repository.AddObject(newObject);
         }
 
-        public async Task AddRelationship(Relationship relationship)
-        {
-			relationship.Id = string.IsNullOrEmpty(relationship.Id) ? Guid.NewGuid().ToString() : relationship.Id;
-
-			await repository.AddRelationship(relationship);
-        }
-
-        public async Task DeleteObject(string generalObjectId)
-        {
-            await repository.DeleteObject(generalObjectId);
-        }
-
-        public async Task DeleteRelationship(string relationshipId)
-        {
-            await repository.DeleteRelationship(relationshipId);
-        }
-
-        public async Task<List<string>> GetDistinctRelationshipsNames()
-        {
-            var result = await repository.CountAllRelationshipsByLabel();
-
-            var resultsDictionary = JsonConvert.DeserializeObject<IEnumerable<Dictionary<string, int>>>(result);
-
-            return resultsDictionary?.SelectMany(x => x.Keys).ToList() ?? new List<string>();
-        }
-
+        /// <summary>
+        /// Gets all objects.
+        /// </summary>
+        /// <returns></returns>
         public async Task<ReadOnlyCollection<GeneralObject>> GetAllObjects()
         {
             var gremlinVertices = await repository.GetAllObjects();
@@ -61,6 +42,39 @@ namespace ObjectManagementSystemApi.Application.Services
             return serializerService.GremlinVerticesToGeneralObjects(gremlinVertices);
         }
 
+        /// <summary>
+        /// Deletes the object.
+        /// </summary>
+        /// <param name="generalObjectId">The general object identifier.</param>
+        public async Task DeleteObject(string generalObjectId)
+        {
+            await repository.DeleteObject(generalObjectId);
+        }
+
+        /// <summary>
+        /// Updates the object.
+        /// </summary>
+        /// <param name="updateObject">The update object.</param>
+        public async Task UpdateObject(GeneralObject updateObject)
+        {
+            await repository.UpdateObject(updateObject);
+        }
+
+        /// <summary>
+        /// Adds the relationship.
+        /// </summary>
+        /// <param name="relationship">The relationship.</param>
+        public async Task AddRelationship(Relationship relationship)
+        {
+			relationship.Id = string.IsNullOrEmpty(relationship.Id) ? Guid.NewGuid().ToString() : relationship.Id;
+
+			await repository.AddRelationship(relationship);
+        }
+
+        /// <summary>
+        /// Gets all relationships.
+        /// </summary>
+        /// <returns></returns>
         public async Task<ReadOnlyCollection<Relationship>> GetAllRelationships()
         {
             var gremlinEdges = await repository.GetAllRelationships();
@@ -68,13 +82,22 @@ namespace ObjectManagementSystemApi.Application.Services
             return serializerService.GremlinEdgesToRelationships(gremlinEdges);
         }
 
-        public async Task<List<string>> GetAllRelationshipDistinctNames()
+        /// <summary>
+        /// Deletes the relationship.
+        /// </summary>
+        /// <param name="relationshipId">The relationship identifier.</param>
+        public async Task DeleteRelationship(string relationshipId)
         {
-            var result = await repository.CountAllRelationshipsByLabel();
+            await repository.DeleteRelationship(relationshipId);
+        }
 
-            var resultsDictionary = JsonConvert.DeserializeObject<IEnumerable<Dictionary<string, int>>>(result);
-
-            return resultsDictionary?.SelectMany(x => x.Keys).ToList() ?? new List<string>();
+        /// <summary>
+        /// Updates the relationship.
+        /// </summary>
+        /// <param name="relationship">The relationship.</param>
+        public async Task UpdateRelationship(Relationship relationship)
+        {
+            await repository.UpdateRelationship(relationship);
         }
     }
 }

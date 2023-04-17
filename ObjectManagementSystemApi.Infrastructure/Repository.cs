@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using ObjectManagementSystemApi.Application;
+﻿using ObjectManagementSystemApi.Application;
 using ObjectManagementSystemApi.Domain;
 namespace ObjectManagementSystemApi.Infrastructure
 {
@@ -19,16 +18,11 @@ namespace ObjectManagementSystemApi.Infrastructure
             await gremlinService.SubmitRequest(request);
         }
 
-        public async Task AddRelationship(Relationship relationship)
+        public async Task<string> GetAllObjects()
         {
-            if (await UnidirectionalRelationshipExists(relationship.FromId, relationship.ToId, relationship.Type))
-            {
-                return;
-            }
-   
-            var request = $"g.V('{relationship.FromId}').addE('{relationship.Type}').property('id', '{relationship.Id}').to(g.V('{relationship.ToId}'))";
+            var request = $"g.V()";
 
-            await gremlinService.SubmitRequest(request);
+            return await gremlinService.SubmitRequest(request);
         }
 
         public async Task DeleteObject(string generalObjectId)
@@ -38,6 +32,27 @@ namespace ObjectManagementSystemApi.Infrastructure
             await gremlinService.SubmitRequest(request);
         }
 
+        public async Task UpdateObject(GeneralObject generalObject)
+        {
+            var request = $"g.V().hasId('{generalObject.Id}').property('description', '{generalObject.Name}').property('description', '{generalObject.Description}')";
+
+            await gremlinService.SubmitRequest(request);
+        }
+
+        public async Task AddRelationship(Relationship relationship)
+        {
+            var request = $"g.V('{relationship.FromId}').addE('{relationship.Type}').property('id', '{relationship.Id}').to(g.V('{relationship.ToId}'))";
+
+            await gremlinService.SubmitRequest(request);
+        }
+
+        public async Task<string> GetAllRelationships()
+        {
+            var request = $"g.E()";
+
+            return await gremlinService.SubmitRequest(request);
+        }
+
         public async Task DeleteRelationship(string relationshipId)
         {
             var request = $"g.E('{relationshipId}').drop()";
@@ -45,42 +60,11 @@ namespace ObjectManagementSystemApi.Infrastructure
             await gremlinService.SubmitRequest(request);
         }
 
-        public async Task<string> CountAllRelationshipsByLabel()
+        public async Task UpdateRelationship(Relationship relationship)
         {
-            var request = $"g.E().groupCount().by(label)";
+            await DeleteRelationship(relationship.Id);
 
-            return await gremlinService.SubmitRequest(request);
-        }
-
-        public async Task<string> GetAllObjects()
-        {
-            var request = $"g.V()";
-
-			return await gremlinService.SubmitRequest(request);
-		}
-
-        public async Task<string> GetAllRelationships()
-        {
-            var request = $"g.E()";
-
-			return await gremlinService.SubmitRequest(request);
-		}
-
-        public async Task<bool> UnidirectionalRelationshipExists(string fromId, string toId, string relationshipName)
-        {
-            var request = $"g.V('{fromId}').outE('{relationshipName}').where(otherV().is('{toId}')).Count()";
-
-            var count = JsonConvert.DeserializeObject<int[]>(await gremlinService.SubmitRequest(request));
-
-            switch (count[0])
-            {
-                case 0:
-                    return false;
-                case 1:
-                    return true;
-                default:
-                    throw new Exception("Error: the relationship has been found more than once");
-            }
+            await AddRelationship(relationship);
         }
     }
 }

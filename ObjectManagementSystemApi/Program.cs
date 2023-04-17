@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ObjectManagementSystemApi.Application;
 using ObjectManagementSystemApi.Application.Serializers;
@@ -14,13 +13,6 @@ AddServices(builder.Services);
 var app = builder.Build();
 
 ActivateServices(app);
-
-app.MapGet("/test", async (IPersistenceService persistenceService) =>
-{
-    var results = await persistenceService.GetAllRelationshipDistinctNames();
-
-    return JsonConvert.SerializeObject(results);
-});
 
 app.MapGet("/objects", async (IPersistenceService persistenceService) => 
 {
@@ -39,9 +31,9 @@ app.MapDelete("/objects/{id}", async (string id, IPersistenceService persistence
     await persistenceService.DeleteObject(id);
 });
 
-app.MapPut("/objects/{id}", () =>
+app.MapPut("/objects", async (GeneralObject generalObject, IPersistenceService persistenceService) =>
 {
-
+    await persistenceService.UpdateObject(generalObject);
 });
 
 app.MapGet("/relationships", async (IPersistenceService persistenceService) =>
@@ -59,6 +51,11 @@ app.MapPost("/relationships", async (Relationship relationship, IPersistenceServ
 app.MapDelete("/relationships/{id}", async (string id, IPersistenceService persistenceService) =>
 {
     await persistenceService.DeleteRelationship(id);
+});
+
+app.MapPut("/relationships", async (Relationship relationship, IPersistenceService persistenceService) =>
+{
+    await persistenceService.UpdateRelationship(relationship);
 });
 
 app.Run();
